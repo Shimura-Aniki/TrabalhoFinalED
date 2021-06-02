@@ -163,7 +163,7 @@ public class Principal {
 				lista.menuEditar(pos);
 				break;
 			case 3:
-				pos = Integer.parseInt(JOptionPane.showInputDialog("Informar a poisção do cadastro que será excluída"));
+				pos = Integer.parseInt(JOptionPane.showInputDialog("Informar a posição do cadastro que será excluída"));
 				lista.rmvCliente(pos);
 				break;
 			case 4:
@@ -297,7 +297,7 @@ public class Principal {
 		FilaAluguel aluguel = new FilaAluguel(5);
 		int op = 0;
 		while (op != 99) {
-			op = Integer.parseInt(JOptionPane.showInputDialog("1 - Verificar disponibilidade de tema\n2 - Alugar tema\n3 - Agendar tema\n"
+			op = Integer.parseInt(JOptionPane.showInputDialog("1 - Verificar disponibilidade de tema\2 - Alugar tema, retirada hoje\n3 - Agendar data de retirada do tema\n"
 					+ "4 - Devolução de tema\n5 - Cancelar reserva\n6 - Verificar alugueis e reservas ativas\n99 - Sair"));
 			switch(op){
 			case 1:
@@ -571,4 +571,5 @@ public class Principal {
 			aluguel.createNewFile();
 		} catch (IOException e) {}		
 	}
-}	
+}
+

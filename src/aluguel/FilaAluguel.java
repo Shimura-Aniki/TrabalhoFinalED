@@ -31,7 +31,7 @@ public class FilaAluguel {
 
 	public void alugarTema() throws ParseException, IOException {
 		Calendar cal = Calendar.getInstance();
-		cliente = JOptionPane.showInputDialog("Informe o usuário");
+		cliente = JOptionPane.showInputDialog("Informe o cliente");
 		boolean verfUsu = acessoCliente.verificarNome(cliente);
 		if(verfUsu) {
 			tema = JOptionPane.showInputDialog("Informe o tema que será alugado");
@@ -107,7 +107,7 @@ public class FilaAluguel {
 		dataAux = dataFim.split("/");
 		boolean diaOk = verificarDia(dataAux[0], dataAux[1], dataAux[2]);
 		boolean mesOk = verificarMes(dataAux[1]);
-		boolean anoOk = verificarAno(dataAux[2]);
+		boolean anoOk = verificarAno(dataAux[0], dataAux[1], dataAux[2]);
 		if(diaOk && mesOk && anoOk) {
 			return dataFim;
 		} else {
@@ -168,15 +168,19 @@ public class FilaAluguel {
 		return ok;
 	}
 
-	private boolean verificarAno(String ano) {
+	private boolean verificarAno(String dia, String mes, String ano) {
 		boolean ok = false;
 		String dataAtual[] = new String[3];
+		int mesAux = Integer.parseInt(mes);
+		int diaAux = Integer.parseInt(dia);
 		int anoAux = Integer.parseInt(ano);
 		Date date = new Date();
-		String anoAtual = formatter.format(date);
-		dataAtual = anoAtual.split("/");
-		int aux = Integer.parseInt(dataAtual[2]);
-		if(aux>=anoAux) {
+		String dataAtualAux = formatter.format(date);
+		dataAtual = dataAtualAux.split("/");
+		int diaAtual = Integer.parseInt(dataAtual[0]);
+		int mesAtual = Integer.parseInt(dataAtual[1]);
+		int anoAtual = Integer.parseInt(dataAtual[2]);
+		if(anoAux>=anoAtual && mesAux>=mesAtual && diaAux>=diaAtual) {
 			ok = true;
 		}
 		return ok;
@@ -190,22 +194,26 @@ public class FilaAluguel {
 			boolean verfTema = acessoTema.verificarTemaAluguel(tema);
 			if(verfTema) {
 				String dataAgenda = InserirData();
-				int qtiddDias = Integer.parseInt(JOptionPane.showInputDialog("Por quantos dias o tema será alugado:"));
-				String dataDev = calculoData(qtiddDias, dataAgenda);		
-				boolean verfData = verificarDisponibilidadeTema(tema, dataAgenda, dataDev);
-				if(verfData) {
-					double valorCobrado = calculoValor(qtiddDias, cliente, tema);
-					String confirmar = JOptionPane.showInputDialog(("Data de devolução: " + dataDev + "\nO valor total será de: R$" 
-					+ valorCobrado + "\nDeseja prosseguir com o aluguel?\nDigite 99 se quiser cancelar"));
-					if(confirmar.equals("99")){
+				if(dataAgenda != null) {
+					int qtiddDias = Integer.parseInt(JOptionPane.showInputDialog("Por quantos dias o tema será alugado:"));
+					String dataDev = calculoData(qtiddDias, dataAgenda);		
+					boolean verfData = verificarDisponibilidadeTema(tema, dataAgenda, dataDev);
+					if(verfData) {
+						double valorCobrado = calculoValor(qtiddDias, cliente, tema);
+						String confirmar = JOptionPane.showInputDialog(("Data de devolução: " + dataDev + "\nO valor total será de: R$" 
+						+ valorCobrado + "\nDeseja prosseguir com o aluguel?\nDigite 99 se quiser cancelar"));
+						if(confirmar.equals("99")){
+							return;
+						}
+						else {
+							String endereco = JOptionPane.showInputDialog("Informar o local da festa");
+							salvarAluguel(cliente, tema, dataDev, dataAgenda, valorCobrado, endereco);
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "Tema indisponível nesta data");
 						return;
 					}
-					else {
-						String endereco = JOptionPane.showInputDialog("Informar o local da festa");
-						salvarAluguel(cliente, tema, dataDev, dataAgenda, valorCobrado, endereco);
-					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Tema indisponível nesta data");
 					return;
 				}
 			} else {
@@ -356,4 +364,3 @@ public class FilaAluguel {
 		}
 	}
 }
-
